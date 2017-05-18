@@ -4,6 +4,7 @@ var db = require('../db');
 var router = express.Router();
 
 /* GET lista de pessoas. */
+
 router.get('/', function(req, res, next) {
 
   db.query({
@@ -65,7 +66,18 @@ router.get('/new/', function(req, res) {
 //   2. Redirecionar para a rota de listagem de pessoas
 //      - Em caso de sucesso do INSERT, colocar uma mensagem feliz
 //      - Em caso de erro do INSERT, colocar mensagem vermelhinha
+router.post('/', function(req, res){
+    console.log(req.body);
+    db.query('INSERT INTO person (name, alive, eatenBy) VALUES (" + req.body.name +
+    ',1, 0)');
 
+    
+    
+ //   db.query(query, function (err, result) {
+  //      if (err) { res.send(401, 'POST didnt work'); }
+ //       else     { res.redirect('/new'); }
+  //  });
+});
 
 /* DELETE uma pessoa */
 // Exercício 2: IMPLEMENTAR AQUI
@@ -74,5 +86,17 @@ router.get('/new/', function(req, res) {
 //   2. Redirecionar para a rota de listagem de pessoas
 //      - Em caso de sucesso do INSERT, colocar uma mensagem feliz
 //      - Em caso de erro do INSERT, colocar mensagem vermelhinha
+router.delete('/:id', function(req, res) {
+    var id = db.escape(req.params.id);
+    var query = 'DELETE FROM person WHERE id =' + id;
+    db.query(query, function(err, result) {
+        if (err) { res.send(401, 'Pessoa inexistente'); }
+        else     { res.redirect('/'); 
+        
+        }
+    });
+});
+
+
 
 module.exports = router;
