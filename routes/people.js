@@ -68,15 +68,12 @@ router.get('/new/', function(req, res) {
 //      - Em caso de erro do INSERT, colocar mensagem vermelhinha
 router.post('/', function(req, res){
     console.log(req.body);
-    db.query('INSERT INTO person (name, alive, eatenBy) VALUES (" + req.body.name +
-    ',1, 0)');
-
-    
-    
- //   db.query(query, function (err, result) {
-  //      if (err) { res.send(401, 'POST didnt work'); }
- //       else     { res.redirect('/new'); }
-  //  });
+    db.query('INSERT INTO person (id, name, alive, eatenBy) VALUES (NULL,' + db.escape(req.body.name) +
+    ',true, NULL)', function(err, result) {
+        if (err) { req.flash ('error', 'Erro ao registrar nova pessoa'); }
+        else     { req.flash('success', 'Pessoa adicionada com sucesso!'); }
+        res.redirect('/people');
+    });
 });
 
 /* DELETE uma pessoa */
@@ -90,10 +87,9 @@ router.delete('/:id', function(req, res) {
     var id = db.escape(req.params.id);
     var query = 'DELETE FROM person WHERE id =' + id;
     db.query(query, function(err, result) {
-        if (err) { res.send(401, 'Pessoa inexistente'); }
-        else     { res.redirect('/'); 
-        
-        }
+        if (err) { req.flash('error', 'Pessoa inexistente'); }
+        else     { req.flash('success', 'pessoa deletada!'); }
+        res.redirect('/people'); 
     });
 });
 
